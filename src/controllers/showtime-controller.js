@@ -9,6 +9,25 @@ export const createShowtimeController = async (req, res, next) => {
 	}
 };
 
+export const getAllShowtimeController = async (req, res, next) => {
+	try {
+		const response = await service.getAllShowtime();
+		return res.status(201).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getShowtimeByIdController = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const response = await service.getShowtimeById(id);
+		return res.status(200).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const updateShowtimeController = async (req, res, next) => {
 	try {
 		const { id } = req.params;

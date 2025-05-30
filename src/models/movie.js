@@ -7,6 +7,7 @@ const movieSchema = new Schema(
 		title: {
 			type: String,
 			required: [true, "Thông tin tên phim là bắt buộc!"],
+			unique: true,
 			trim: true,
 			minlength: 3,
 			maxlength: 100,

@@ -14,6 +14,7 @@ const seatSchema = new Schema(
 		},
 		column: {
 			type: String,
+			unique: true,
 			required: true,
 		},
 		room: {

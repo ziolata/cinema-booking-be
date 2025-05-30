@@ -9,6 +9,24 @@ export const createCinemaController = async (req, res, next) => {
 	}
 };
 
+export const getAllCinemaController = async (req, res, next) => {
+	try {
+		const response = await service.getAllCinema(req.body);
+		return res.status(201).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getCinemaByIdController = async (req, res, next) => {
+	try {
+		const response = await service.getCinemaById(req.body);
+		return res.status(201).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const updateCinemaController = async (req, res, next) => {
 	try {
 		const { id } = req.params;

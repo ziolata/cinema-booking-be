@@ -9,6 +9,7 @@ export const createPaymentController = async (req, res, next) => {
 		next(error);
 	}
 };
+
 export const getPaymentController = async (req, res, next) => {
 	try {
 		const response = await services.getPayment(req.query);
@@ -17,3 +18,4 @@ export const getPaymentController = async (req, res, next) => {
 		next(error);
 	}
 };
+

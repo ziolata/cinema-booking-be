@@ -72,7 +72,7 @@ export const sendTicket = async (to, item) => {
                 <!-- Nút xem đơn hàng -->
                 <a href="https://your-ecommerce-site.com/" 
                    style="display: inline-block; padding: 10px 15px; background-color: #3498db; color: white; text-decoration: none; font-weight: bold; border-radius: 5px; margin-top: 20px;">
-                    Xem chi tiết đơn hàng
+                    Xem chi tiết tại đây
                 </a>
             </div>
         `,

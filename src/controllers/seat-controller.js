@@ -18,6 +18,25 @@ export const createManySeatController = async (req, res, next) => {
 	}
 };
 
+export const getAllSeatController = async (req, res, next) => {
+	try {
+		const response = await service.getAllSeat();
+		return res.status(201).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getSeatByIdController = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const response = await service.getSeatById(id);
+		return res.status(200).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const updateSeatController = async (req, res, next) => {
 	try {
 		const { id } = req.params;

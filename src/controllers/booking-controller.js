@@ -3,8 +3,6 @@ import * as service from "../services/booking-service.js";
 export const createBookingController = async (req, res, next) => {
 	try {
 		req.body.user_id = req.user.id;
-		console.log(req.body);
-
 		const response = await service.createBooking(req.body);
 		return res.status(201).json(response);
 	} catch (error) {

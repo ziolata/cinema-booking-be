@@ -7,6 +7,7 @@ const roomSchema = new Schema(
 		name: {
 			type: String,
 			required: true,
+			unique: true,
 		},
 		cinema: {
 			type: Schema.Types.ObjectId,

@@ -18,7 +18,6 @@ const showtimeSchema = new Schema(
 			type: Date,
 			required: true,
 		},
-		ticket: [{ type: Schema.Types.ObjectId, ref: "Ticket", required: true }],
 		available_seats: {
 			type: Number,
 			required: true,

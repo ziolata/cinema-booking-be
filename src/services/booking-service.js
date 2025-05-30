@@ -6,6 +6,7 @@ import { throwError, successResponse } from "../utils/response.js";
 import mongoose from "mongoose";
 import { sendBookingEmail } from "./email-service.js";
 import user from "../models/user.js";
+
 export const createBooking = async (data) => {
 	const session = await mongoose.startSession();
 	session.startTransaction();

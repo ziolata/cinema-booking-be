@@ -11,6 +11,25 @@ export const createMovieController = async (req, res, next) => {
 	}
 };
 
+export const getAllMovieController = async (req, res, next) => {
+	try {
+		const response = await service.getAllMovie();
+		return res.status(201).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getMovieByIdController = async (req, res, next) => {
+	try {
+		const { id } = req.params;
+		const response = await service.getMovieById(id);
+		return res.status(200).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const updateMovieController = async (req, res, next) => {
 	try {
 		const { id } = req.params;
