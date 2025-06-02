@@ -5,6 +5,9 @@ import { config } from "./config/serverConfig.js";
 import { connectDB } from "./config/mongodb.js";
 import { Routers } from "./routes/v1/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import {geoipVNOnly} from "./middleware/geoipMiddleware.js"
+import {requestLogger} from "./middleware/loggerMiddleware.js"
+
 const app = express();
 app.use(
 	cors({
@@ -16,7 +19,8 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
-
+app.use(geoipVNOnly);
+app.use(requestLogger);
 Routers(app);
 app.use(errorHandler);
 
