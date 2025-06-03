@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - main  # hoặc 'dev' nếu bạn muốn deploy nhánh dev
+      - main
 
 jobs:
   deploy:
@@ -22,9 +22,4 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -o StrictHostKeyChecking=no administrator@$DEPLOY_HOST '
-            cd C:/app/CinemaBooking &&
-            git reset --hard &&
-            git pull cinema main &&
-            pm2 restart all
-          '
+          ssh -o StrictHostKeyChecking=no administrator@$DEPLOY_HOST "cd C:/app/CinemaBooking && git fetch origin main && git reset --hard origin/main && git log -1 --oneline && pm2 restart cinemabooking"
