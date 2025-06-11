@@ -1,8 +1,10 @@
 import User from "../models/user.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 import { successResponse, throwError } from "../utils/response.js";
 import { uploadImage } from "./cloud/cloudinary-service.js";
 
 const getUserOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundUser = await User.findById(id);
 	if (!foundUser) {
 		throwError(404, "Người dùng không tồn tại!");
@@ -10,8 +12,16 @@ const getUserOrThrowById = async (id) => {
 	return foundUser;
 };
 
-export const getAllUser = async () => {
-	const foundUser = await User.find();
+export const getAllUser = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundUser = await User.paginate(null, options);
 	return successResponse("Lấy danh sách người dùng thành công!", foundUser);
 };
 

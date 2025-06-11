@@ -6,35 +6,51 @@ import { throwError, successResponse } from "../utils/response.js";
 import mongoose from "mongoose";
 import { sendBookingEmail } from "./email-service.js";
 import user from "../models/user.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
+
+const getBookingOrThrowById = async (id) => {
+	checkObjectId(id);
+	const foundBooking = await booking.findById(id);
+	if (!foundBooking) {
+		throwError(404, "Phòng chiếu không tồn tại!");
+	}
+	return foundBooking;
+};
 
 export const createBooking = async (data) => {
 	const session = await mongoose.startSession();
 	session.startTransaction();
 	try {
-		if (!mongoose.Types.ObjectId.isValid(data.showtime)) {
-			throwError(404, "Showtime ID không hợp lệ!");
+		const seatIds = data.seats.map((value) => value.id);
+		const objectId = [
+			data.showtime,
+			data.ticket_type,
+			data.user_id,
+			seatIds,
+		].flat();
+
+		for (const id of objectId) {
+			checkObjectId(id);
 		}
 		const foundShowtime = await showtime.findById(data.showtime).select("room");
+
 		if (!foundShowtime) {
 			throwError(404, "Suất chiếu không tồn tại!");
 		}
-
 		const foundTicketType = await ticketType.findOne({
 			_id: data.ticket_type,
 			showtime: data.showtime,
 		});
 
-		const seatIds = data.seats.map(
-			(value) => new mongoose.Types.ObjectId(value.id),
-		);
-
 		const foundSeats = await seat.find({
 			_id: { $in: seatIds },
 			room: foundShowtime.room._id,
 		});
+
 		const foundUser = await user.findById(data.user_id);
+
 		if (!foundTicketType) {
-			throwError(404, "Vé không tồn tại!");
+			throwError(404, "Loại vé không tồn tại!");
 		}
 		if (foundSeats.length !== seatIds.length) {
 			throwError(404, "Một số ghế không tồn tại hoặc không hợp lệ!");
@@ -68,15 +84,51 @@ export const createBooking = async (data) => {
 		return successResponse("Booking Thành công", response);
 	} catch (error) {
 		await session.abortTransaction();
-		console.log(error);
-
 		throw error;
 	} finally {
 		session.endSession();
 	}
 };
 
+export const getAllBooking = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundBooking = await booking.paginate(null, options);
+	return successResponse("Lấy danh sách booking thành công!", foundBooking);
+};
+
+export const getAllBookingByUser = async (user, page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundBooking = await booking.paginate({ user }, options);
+	return successResponse(
+		`Lấy danh sách booking của id ${user} thành công!`,
+		foundBooking,
+	);
+};
+
+export const getBookingById = async (id) => {
+	const foundBooking = await getBookingOrThrowById(id);
+	return successResponse(
+		`Lấy thông tin booking có id: ${id} thành công!`,
+		foundBooking,
+	);
+};
+
 export const updateBooking = async (id, data) => {
+	await getBookingOrThrowById(id);
 	const foundBooking = await booking.findById(id);
 	if (!foundBooking) {
 		throwError(404, "Booking không tồn tại!");
@@ -86,6 +138,7 @@ export const updateBooking = async (id, data) => {
 };
 
 export const deleteBooking = async (id) => {
+	await getBookingOrThrowById(id);
 	const foundBooking = await booking.findById(id);
 	if (!foundBooking) {
 		throwError(404, "Booking không tồn tại!");

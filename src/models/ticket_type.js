@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginator from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 const ticket_typeSchema = new Schema(
 	{
@@ -14,5 +14,6 @@ const ticket_typeSchema = new Schema(
 		timestamps: true,
 	},
 );
+ticket_typeSchema.plugin(mongoosePaginator);
 
 export default mongoose.model("TicketType", ticket_typeSchema);

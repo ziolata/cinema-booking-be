@@ -8,6 +8,7 @@ import movie from "./movie-route.js";
 import showtime from "./showtime-route.js";
 import genre from "./genre-route.js";
 import tickeType from "./ticket_type-route.js";
+import ticket from "./ticket-route.js";
 import booking from "./booking-route.js";
 import pay from "./pay-route.js";
 
@@ -22,6 +23,7 @@ export const Routers = (app) => {
 	app.use("/api/v1/showtime", showtime);
 	app.use("/api/v1/genre", genre);
 	app.use("/api/v1/ticket_type", tickeType);
+	app.use("/api/v1/ticket", ticket);
 	app.use("/api/v1/booking", booking);
 	app.use("/api/v1/pay", pay);
 };

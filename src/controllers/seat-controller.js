@@ -20,8 +20,10 @@ export const createManySeatController = async (req, res, next) => {
 
 export const getAllSeatController = async (req, res, next) => {
 	try {
-		const response = await service.getAllSeat();
-		return res.status(201).json(response);
+		const page = Number.parseInt(req.query.page) || 1;
+		const limit = Number.parseInt(req.query.limit) || 10;
+		const response = await service.getAllSeat(page, limit);
+		return res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}

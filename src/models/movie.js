@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginator from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 
 const movieSchema = new Schema(
@@ -38,5 +38,5 @@ const movieSchema = new Schema(
 		timestamps: true,
 	},
 );
-
+movieSchema.plugin(mongoosePaginator);
 export default mongoose.model("Movie", movieSchema);

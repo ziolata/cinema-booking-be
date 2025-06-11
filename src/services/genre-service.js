@@ -1,14 +1,16 @@
 import genre from "../models/genre.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 import { successResponse, throwError } from "../utils/response.js";
 
 const throwIfGenreNameExists = async (name) => {
 	const foundGenre = await genre.findOne({ name });
-	if (!foundGenre) {
+	if (foundGenre) {
 		throwError(400, "Thể loại phim đã tồn tại trong hệ thống!");
 	}
 };
 
 const getGenreOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundGenre = await movie.findById(id);
 	if (!foundGenre) {
 		throwError(404, "Thể loại phim không tồn tại!");

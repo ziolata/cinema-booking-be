@@ -13,8 +13,10 @@ export const createMovieController = async (req, res, next) => {
 
 export const getAllMovieController = async (req, res, next) => {
 	try {
-		const response = await service.getAllMovie();
-		return res.status(201).json(response);
+		const page = Number.parseInt(req.query.page) || 1;
+		const limit = Number.parseInt(req.query.limit) || 10;
+		const response = await service.getAllMovie(page, limit);
+		return res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}

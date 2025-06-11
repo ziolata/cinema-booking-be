@@ -12,11 +12,13 @@ const throwIfSeatExists = async (column, room, row) => {
 		throwError(400, "Chỗ ngồi đã tồn tại!");
 	}
 };
-const checkSeatExisting = async (id) => {
+const getSeatsOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundSeat = await seat.findById(id);
 	if (!foundSeat) {
 		throwError(404, "Ghế ngồi không tồn tại");
 	}
+	return foundSeat;
 };
 const checkRoomExisting = async (id) => {
 	const foundRoom = await room.findById(id);
@@ -58,16 +60,21 @@ export const createManySeat = async (data) => {
 	return successResponse("Thêm thành công!");
 };
 
-export const getAllSeat = async () => {
-	const foundSeat = await seat.find();
+export const getAllSeat = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundSeat = await seat.paginate(null, options);
 	return successResponse("Lấy danh sách ghế ngồi thành công!", foundSeat);
 };
 
 export const getSeatById = async (id) => {
-	const foundSeat = await seat.findById(id);
-	if (!foundSeat) {
-		throwError(404, "Ghế ngồi không tồn tại!");
-	}
+	const foundSeat = await getSeatsOrThrowById(id);
 	return successResponse(
 		`Lấy thông tin ghế ngồi có số id ${id} thành công!`,
 		foundSeat,
@@ -80,7 +87,7 @@ export const getSeatsByRoomId = async (room_id) => {
 };
 
 export const updateSeat = async (id, data) => {
-	await checkSeatExisting(id);
+	await getSeatsOrThrowById(id);
 	await checkRoomExisting(data.room);
 	if (foundSeat.seat_number === data.seat_number) {
 		throwError(400, "Mã số ghế đã tồn tại!");
@@ -90,7 +97,7 @@ export const updateSeat = async (id, data) => {
 };
 
 export const deleteSeat = async (id) => {
-	await checkSeatExisting(id);
+	await getSeatsOrThrowById(id);
 	await seat.deleteOne({ _id: id });
 	return successResponse("Xóa thành công!");
 };

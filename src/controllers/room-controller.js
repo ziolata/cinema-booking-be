@@ -11,7 +11,9 @@ export const createRoomController = async (req, res, next) => {
 
 export const getAllRoomController = async (req, res, next) => {
 	try {
-		const response = await service.getAllRoom();
+		const page = Number.parseInt(req.query.page) || 1;
+		const limit = Number.parseInt(req.query.limit) || 10;
+		const response = await service.getAllRoom(page, limit);
 		return res.status(200).json(response);
 	} catch (error) {
 		next(error);

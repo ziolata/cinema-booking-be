@@ -12,7 +12,7 @@ export const createGenreController = async (req, res, next) => {
 export const getAllGenreController = async (req, res, next) => {
 	try {
 		const response = await service.getAllGenre();
-		return res.status(201).json(response);
+		return res.status(200).json(response);
 	} catch (error) {
 		next(error);
 	}

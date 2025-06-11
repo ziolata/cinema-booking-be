@@ -1,8 +1,10 @@
 import showtime from "../models/showtime.js";
 import ticket_type from "../models/ticket_type.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 import { successResponse, throwError } from "../utils/response.js";
 
 const getTicketTypeOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundTicketType = await ticket_type.findById(id);
 	if (!foundTicketType) {
 		throwError(404, "Loại vé không tồn tại!");
@@ -34,8 +36,16 @@ export const createTicketType = async (data) => {
 	return successResponse("Thêm thành công!", response);
 };
 
-export const getAllTicketType = async () => {
-	const foundTicketType = await ticket_type.find();
+export const getAllTicketType = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundTicketType = await ticket_type.paginate(null, options);
 	return successResponse(
 		"Lấy danh sách các loại vé thành công!",
 		foundTicketType,

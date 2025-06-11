@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginator from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 
 const seatSchema = new Schema(
@@ -31,5 +31,5 @@ const seatSchema = new Schema(
 		timestamps: true,
 	},
 );
-
+seatSchema.plugin(mongoosePaginator);
 export default mongoose.model("Seat", seatSchema);

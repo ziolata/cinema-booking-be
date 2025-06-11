@@ -3,6 +3,7 @@ import movie from "../models/movie.js";
 import { addMinutes } from "../utils/time.js";
 import room from "../models/room.js";
 import { successResponse, throwError } from "../utils/response.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 
 const isOverlappingShowtime = async ({ roomId, startTime, endTime }) => {
 	const query = {
@@ -14,6 +15,7 @@ const isOverlappingShowtime = async ({ roomId, startTime, endTime }) => {
 };
 
 const getShowtimeOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundRoom = await room.findById(id);
 	if (!foundRoom) {
 		throwError(404, "Phòng chiếu không tồn tại!");
@@ -54,9 +56,17 @@ export const getShowtimeById = async (id) => {
 	);
 };
 
-export const getAllShowtime = async () => {
-	const response = await showtime.find().populate("movie").populate("room");
-	return successResponse("Lấy danh sách chiếu thành công!", response);
+export const getAllShowtime = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundShowtime = await showtime.paginate(null, options);
+	return successResponse("Lấy danh sách chiếu thành công!", foundShowtime);
 };
 
 export const updateShowtime = async (id, data) => {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginator from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 
 const roomSchema = new Schema(
@@ -23,5 +23,5 @@ const roomSchema = new Schema(
 		timestamps: true,
 	},
 );
-
+roomSchema.plugin(mongoosePaginator);
 export default mongoose.model("Room", roomSchema);

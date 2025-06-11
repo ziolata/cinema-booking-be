@@ -31,7 +31,7 @@ export const sendBookingEmail = async (to, link) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
 		to,
-		subject: "Bạn có một đơn booking vé xem phim",
+		subject: "Bạn có một booking vé xem phim",
 		html: `<p>Bạn vừa booking vé xem phim tại Cinema AZ.....</p>
             <p>Nhấp vào liên kết dưới đây để xem chi tiết:</p>
             <a href="${link}">Click vào đây</a>

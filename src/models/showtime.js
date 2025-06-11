@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import mongoosePaginator from "mongoose-paginate-v2";
 const { Schema } = mongoose;
 
 const showtimeSchema = new Schema(
@@ -27,5 +27,6 @@ const showtimeSchema = new Schema(
 		timestamps: true,
 	},
 );
+showtimeSchema.plugin(mongoosePaginator);
 
 export default mongoose.model("Showtime", showtimeSchema);

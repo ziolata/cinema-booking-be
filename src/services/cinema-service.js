@@ -1,18 +1,22 @@
 import cinema from "../models/cinema.js";
+import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 import { successResponse, throwError } from "../utils/response.js";
 
 const throwIfCinemaNameExists = async (name) => {
 	const foundCinema = await cinema.findOne({ name });
-	if (!foundCinema) {
-		throwError(400, "Thể loại phim đã tồn tại trong hệ thống!");
+	if (foundCinema) {
+		throwError(400, "Rạp chiếu đã tồn tại trong hệ thống!");
 	}
 };
 
 const getCinemaOrThrowById = async (id) => {
+	checkObjectId(id);
 	const foundCinema = await cinema.findById(id);
 	if (!foundCinema) {
-		throwError(404, "Thể loại phim không tồn tại!");
+		throwError(404, "Rạp chiếu phim không tồn tại!");
 	}
+	console.log("Debug:", foundCinema);
+
 	return foundCinema;
 };
 
@@ -22,13 +26,21 @@ export const createCinema = async (data) => {
 	return successResponse("Thêm thành công!", response);
 };
 
-export const getAllCinema = async () => {
-	const foundCinema = await cinema.find();
+export const getAllCinema = async (page = 1, limit = 10) => {
+	const docsToItems = {
+		docs: "items",
+	};
+	const options = {
+		page,
+		limit,
+		customLabels: docsToItems,
+	};
+	const foundCinema = await cinema.paginate(null, options);
 	return successResponse("Lấy danh sách rạp chiếu thành công", foundCinema);
 };
 
 export const getCinemaById = async (id) => {
-	const foundCinema = getCinemaOrThrowById(id);
+	const foundCinema = await getCinemaOrThrowById(id);
 	return successResponse(
 		`Lấy thông tin cinema có id: ${id} thành công!`,
 		foundCinema,
