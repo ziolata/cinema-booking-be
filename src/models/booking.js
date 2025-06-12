@@ -26,7 +26,7 @@ const bookingSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ["unpaid", "paid"],
+			enum: ["unpaid", "paid", "cancel"],
 		},
 	},
 	{

@@ -21,7 +21,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 app.use(compression({ threshold: 1024 }));
-
 app.use(geoipVNOnly);
 app.use(requestLogger);
 Routers(app);

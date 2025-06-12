@@ -18,9 +18,11 @@ const getBookingOrThrowById = async (id) => {
 };
 
 export const createBooking = async (data) => {
+	// Bắt đầu transaction đảm bảo dữ liệu đồng bộ nếu có lỗi
 	const session = await mongoose.startSession();
 	session.startTransaction();
 	try {
+		// Kiểm tra các dữ liệu id phù hợp với ObjectID của moongose
 		const seatIds = data.seats.map((value) => value.id);
 		const objectId = [
 			data.showtime,
@@ -28,12 +30,9 @@ export const createBooking = async (data) => {
 			data.user_id,
 			seatIds,
 		].flat();
+		objectId.forEach(checkObjectId);
 
-		for (const id of objectId) {
-			checkObjectId(id);
-		}
 		const foundShowtime = await showtime.findById(data.showtime).select("room");
-
 		if (!foundShowtime) {
 			throwError(404, "Suất chiếu không tồn tại!");
 		}
@@ -62,7 +61,6 @@ export const createBooking = async (data) => {
 		if (unavailableSeats.length > 0) {
 			throwError(400, "Một số ghế đã được đặt trước!");
 		}
-
 		await seat.updateMany({ _id: seatIds }, { status: "booked" }, { session });
 
 		const response = await booking.create(
