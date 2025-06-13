@@ -1,6 +1,9 @@
 import { AdminLog } from "../models/adminLog.js";
 
 export const AdminLogger = async (req, res, next) => {
+	const role = req.user.role;
+	// Kiểm tra trường hợp không phải admin thì bỏ qua
+	if (role !== "admin") return next();
 	// Lấy tên model trong endpoint
 	const target = req.originalUrl.split("/");
 	if (

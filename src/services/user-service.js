@@ -33,8 +33,11 @@ export const getUserById = async (id) => {
 	);
 };
 
-export const updateUser = async (user_id, data) => {
-	await getUserOrThrowById(user_id);
+export const updateUser = async (user_id, role_name, data) => {
+	if (data.role && role_name !== "admin") {
+		throwError(403, "Bạn không có quyền thay đổi vai trò!");
+	}
+	const foundUser = await getUserOrThrowById(user_id);
 	if (data.avatar) {
 		const avatar = await uploadImage(
 			data.avatar,
@@ -43,6 +46,7 @@ export const updateUser = async (user_id, data) => {
 		);
 		data.avatar = avatar;
 	}
+
 	await User.updateOne({ _id: user_id }, data);
 	return successResponse("Cập nhật thành công!");
 };

@@ -51,8 +51,9 @@ export const getBookingByIdController = async (req, res, next) => {
 };
 export const updateBookingController = async (req, res, next) => {
 	try {
+		const user = req.user;
 		const { id } = req.params;
-		const response = await service.updateBooking(id, req.body);
+		const response = await service.updateBooking(id, user, req.body);
 		return res.status(200).json(response);
 	} catch (error) {
 		next(error);

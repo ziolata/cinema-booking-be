@@ -3,7 +3,13 @@ import { Router } from "express";
 import { isAdmin, isAuthenticated } from "../../middleware/authMiddleware.js";
 import { AdminLogger } from "../../middleware/adminLog.js";
 const routes = new Router();
-routes.put("/update/:id", isAuthenticated, controller.updateUserController);
+routes.put("/update/me", isAuthenticated, controller.updateUserController);
+routes.put(
+	"/update/:id",
+	isAdmin,
+	AdminLogger,
+	controller.updateUserController,
+);
 routes.get("/", isAdmin, controller.getAllUserController);
 routes.get("/:id", controller.getUserByIdController);
 routes.delete(

@@ -2,11 +2,15 @@ import * as service from "../services/user-service.js";
 
 export const updateUserController = async (req, res, next) => {
 	try {
-		const user = req.user.id;
-		data.user_id = user;
-		const avatarPath = req.files.avatar;
-		data.avatar = avatarPath;
-		const response = await service.updateUser(req.body, user);
+		const role = req.user.role;
+		const user_id = req.user.id;
+		const targetUserId =
+			role === "admin" && req.params.id ? req.params.id : user_id;
+		if (req.files) {
+			const avatarPath = req.files.avatar;
+			req.body.avatar = avatarPath;
+		}
+		const response = await service.updateUser(targetUserId, role, req.body);
 		return res.status(200).json(response);
 	} catch (error) {
 		next(error);

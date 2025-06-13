@@ -1,10 +1,6 @@
 import * as controller from "../../controllers/booking-controller.js";
 import { Router } from "express";
-import {
-	authorizeBookingUpdate,
-	isAdmin,
-	isAuthenticated,
-} from "../../middleware/authMiddleware.js";
+import { isAdmin, isAuthenticated } from "../../middleware/authMiddleware.js";
 import { AdminLogger } from "../../middleware/adminLog.js";
 const routes = new Router();
 routes.post("/add", isAuthenticated, controller.createBookingController);
@@ -18,7 +14,7 @@ routes.delete(
 );
 routes.put(
 	"/update/:id",
-	authorizeBookingUpdate,
+	isAuthenticated,
 	AdminLogger,
 	controller.updateBookingController,
 );
