@@ -125,22 +125,23 @@ export const getBookingById = async (id) => {
 	);
 };
 
-export const updateBooking = async (id, data) => {
-	await getBookingOrThrowById(id);
-	const foundBooking = await booking.findById(id);
-	if (!foundBooking) {
-		throwError(404, "Booking không tồn tại!");
+export const updateBooking = async (id, user, data) => {
+	const foundBooking = await getBookingOrThrowById(id);
+	// Kiểm tra user có đang update status ngoài cancel hay không
+	if (user.role !== "admin" && data.status !== "cancel") {
+		throwError(403, "Bạn chỉ có thể hủy vé đơn này!");
 	}
+	// Kiểm tra user đang update có phải của booking của bản thân, ngoại trừ admin
+	if (foundBooking.user_id !== user.id && user.role !== "admin") {
+		throwError(403, "Bạn chỉ có thể hủy vé thuộc tài khoản của bạn!");
+	}
+
 	await booking.updateOne({ _id: id }, { status: data.status });
 	return successResponse("Cập nhật thành công!");
 };
 
 export const deleteBooking = async (id) => {
 	await getBookingOrThrowById(id);
-	const foundBooking = await booking.findById(id);
-	if (!foundBooking) {
-		throwError(404, "Booking không tồn tại!");
-	}
 	await booking.deleteOne({ _id: id });
 	return successResponse("Xóa thành công!");
 };
