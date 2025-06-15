@@ -1,8 +1,10 @@
 import User from "../models/user.js";
 import { comparePassword, hashPassword } from "../utils/hashUtils.js";
-import { findUserByToken, signToken } from "../utils/authUtils.js";
+import { signToken, verifyToken } from "../utils/authUtils.js";
 import { sendEmail } from "../utils/emailUtils.js";
 import { throwError, successResponse } from "../utils/response.js";
+import token from "../models/token.js";
+import user from "../models/user.js";
 
 export const register = async (data) => {
 	data.password = hashPassword(data.password);
@@ -11,8 +13,15 @@ export const register = async (data) => {
 		throwError(400, "Email đăng ký đã tồn tại!");
 	}
 	const response = await User.create(data);
-	const token = signToken(response, "15m");
-	await sendEmail(response.email, "activate", token);
+	const createdToken = signToken(response, "15m");
+	const decodedToken = verifyToken(createdToken);
+	await token.create({
+		user_id: response._id,
+		token: createdToken,
+		type: "verify_account",
+		expiresAt: decodedToken.exp,
+	});
+	await sendEmail(response.email, "activate", createdToken);
 	return successResponse("Đăng ký thành công", response);
 };
 
@@ -38,11 +47,24 @@ export const login = async (data) => {
 	throwError(400, "Sai mật khẩu!");
 };
 
-export const activateAccount = async (token) => {
-	const foundUser = await findUserByToken(token);
+export const activateAccount = async (tokenParam) => {
+	const decodedToken = verifyToken(tokenParam);
+	const tokenDoc = await token.findOne({ token: tokenParam });
+	const foundUser = await user.findOne(decodedToken._id);
 	if (foundUser.isActive === "activated") {
 		throwError(400, "Tài khoản đã được kích hoạt!");
 	}
+	if (!tokenDoc) {
+		throwError(404, "Đường dẫn không tồn tại!");
+	}
+	if (tokenDoc.used !== "unused") {
+		await token.updateOne({ token: tokenParam }, { used: "used" });
+		throwError(400, "Đường dẫn đã được sử dụng!");
+	}
+	if (tokenDoc.type !== "verify_account") {
+		throwError(400, "Đường dẫn này không dành cho kích hoạt tài khoản!");
+	}
+	await token.updateOne({ token: tokenParam }, { used: "used" });
 	await User.updateOne({ _id: foundUser._id }, { isActive: "activated" });
 	return successResponse("Kích hoạt tài khoản thành công!");
 };
@@ -52,32 +74,41 @@ export const forgotPassword = async (data) => {
 	if (!foundEmail) {
 		throwError(404, "Email không tồn tại!");
 	}
-	const token = signToken(foundEmail, "15m");
-	await User.updateOne(
-		{ _id: foundEmail._id },
-		{ reset_password_token: token },
-	);
+	const createdToken = signToken(foundEmail, "15m");
+	const decodedToken = verifyToken(createdToken);
+	await token.create({
+		user_id: foundEmail._id,
+		token: createdToken,
+		type: "verify_account",
+		expiresAt: decodedToken.exp,
+	});
 	await sendEmail(foundEmail.email, "reset", token);
 	return successResponse("Đường dẫn lấy lại mật khẩu đã được gửi vào email!");
 };
 
-export const resetPassword = async (data, token) => {
-	const foundUser = await findUserByToken(token);
-	if (!foundUser.reset_password_token) {
+export const resetPassword = async (password, tokenParam) => {
+	const decodedToken = verifyToken(tokenParam);
+	const tokenDoc = await token.findOne({ token: tokenParam });
+	if (!tokenDoc) {
 		throwError(404, "Đường dẫn không tồn tại!");
 	}
-	data.password = hashPassword(data.password);
-	await seat.updateMany(
-		{ _id: { $in: seatIds } },
-		{ $set: { status: "booked" } },
-		{ session },
-	);
+	if (tokenDoc.used !== "unused") {
+		await token.updateOne({ token: tokenParam }, { used: "used" });
+		throwError(400, "Đường dẫn đã được sử dụng!");
+	}
+	if (tokenDoc.type !== "reset_password") {
+		throwError(400, "Đường dẫn này không dành cho tác vụ đặt lại mật khẩu!");
+	}
+	await token.updateOne({ token: tokenParam }, { used: "used" });
+	// Mã hóa password bằng thư viện bcryptjs
+	const hash = hashPassword(password);
+	await user.updateOne({ _id: decodedToken._id }, { password: hash });
 	return successResponse("Đổi mật khẩu thành công");
 };
 
-export const changePassword = async (data, user) => {
+export const changePassword = async (password, user) => {
 	const foundUser = await User.findById(user);
-	data.password = hashPassword(data.password);
-	await User.updateOne({ _id: foundUser._id }, { password: data.password });
+	const hash = hashPassword(password);
+	await User.updateOne({ _id: foundUser._id }, { password: hash });
 	return successResponse("Đổi mật khẩu thành công!");
 };

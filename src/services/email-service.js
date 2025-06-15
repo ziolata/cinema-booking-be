@@ -27,6 +27,20 @@ export const sendActivateEmail = async (to, link) => {
 	await transporter.sendMail(mailOptions);
 };
 
+export const sendChangeEmail = async (to, link) => {
+	const mailOptions = {
+		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
+		to,
+		subject: "Đổi email tại Cinema AZ",
+		html: `<p>Bạn vừa yêu cầu đổi thông tin email tại  Cinema AZ.</p>
+            <p>Nhấp vào liên kết dưới đây để xác nhận đổi email:</p>
+            <a href="${link}">Click vào đây</a>
+            <p>Liên kết này sẽ hết hạn sau 15 phút.</p>`,
+	};
+
+	await transporter.sendMail(mailOptions);
+};
+
 export const sendBookingEmail = async (to, link) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,

@@ -12,6 +12,11 @@ routes.put(
 );
 routes.get("/", isAdmin, controller.getAllUserController);
 routes.get("/:id", controller.getUserByIdController);
+routes.get(
+	"/change-email/:token",
+	isAuthenticated,
+	controller.confirmChangeEmailController,
+);
 routes.delete(
 	"/delete/:id",
 	isAdmin,
