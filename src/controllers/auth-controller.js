@@ -53,7 +53,7 @@ export const resetPasswordController = async (req, res, next) => {
 export const changePassword = async (req, res, next) => {
 	try {
 		const user_id = req.user.id;
-		if (req.body.password !== req.body.repassword) {
+		if (req.body.newpassword !== req.body.renewpassword) {
 			throw { status: 400, message: "Mật khẩu không trùng khớp!" };
 		}
 		const response = await service.changePassword(req.body, user_id);
