@@ -3,6 +3,7 @@ import user from "../models/user.js";
 import { signToken, verifyToken } from "../utils/authUtils.js";
 import { checkObjectId } from "../utils/checkObjectIdUtils.js";
 import { successResponse, throwError } from "../utils/response.js";
+import { generateAndStoreToken } from "../utils/userTokenUtils.js";
 import { uploadImage } from "./cloud/cloudinary-service.js";
 import { sendChangeEmail } from "./email-service.js";
 
@@ -82,23 +83,19 @@ export const updateUser = async (user_id, role_name, data) => {
 			{ used: "expired" },
 		);
 		// Tạo token dựa trên thông tin tại khoản đang đăng nhập
-		const createdToken = signToken(foundUser, "15m");
-		// decode để lấy thông tin hạn của token (exp)
-		const decodedToken = verifyToken(createdToken);
-		await token.create({
-			user_id,
-			token: createdToken,
-			type: "change_email",
-			expiresAt: decodedToken.exp,
-			targetEmail: data.email,
-		});
-		const link = `${process.env.LINK}/api/v1/user/change-email/${createdToken}`;
+		const changeEmailtoken = await generateAndStoreToken(
+			foundUser,
+			"change_email",
+			"15m",
+			data.email,
+		);
+		const link = `${process.env.LINK}/api/v1/user/change-email/${changeEmailtoken}`;
 		await sendChangeEmail(foundUser.email, link);
 		// Loại bỏ email khỏi data
 		const { email, ...rest } = data;
 		updateData = rest;
 		return successResponse(
-			"Yêu cầu đổi email đã được gửi vào email hiện tại của bạn, vui long xác nhận nếu thay đổi thông tin email!",
+			"Yêu cầu đổi email đã được gửi vào email hiện tại của bạn, vui lòng nhận nếu thay đổi thông tin email!",
 		);
 	}
 

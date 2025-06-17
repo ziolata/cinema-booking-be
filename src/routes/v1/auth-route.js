@@ -4,7 +4,7 @@ import { isAuthenticated } from "../../middleware/authMiddleware.js";
 const routes = new Router();
 routes.post("/register", controller.registerController);
 routes.post("/login", controller.loginController);
-routes.post("/activate/:token", controller.activateController);
+routes.get("/activate/:token", controller.activateController);
 routes.post("/forgot/", controller.forgotPasswordController);
 routes.post("/reset/:token", controller.resetPasswordController);
 routes.post("/change", isAuthenticated, controller.changePassword);

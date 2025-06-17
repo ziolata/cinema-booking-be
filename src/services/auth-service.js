@@ -1,10 +1,10 @@
-import User from "../models/user.js";
 import { comparePassword, hashPassword } from "../utils/hashUtils.js";
 import { signToken, verifyToken } from "../utils/authUtils.js";
 import { sendEmail } from "../utils/emailUtils.js";
 import { throwError, successResponse } from "../utils/response.js";
 import token from "../models/token.js";
-import user from "../models/user.js";
+import User from "../models/user.js";
+import { generateAndStoreToken } from "../utils/userTokenUtils.js";
 
 export const register = async (data) => {
 	data.password = hashPassword(data.password);
@@ -13,15 +13,12 @@ export const register = async (data) => {
 		throwError(400, "Email đăng ký đã tồn tại!");
 	}
 	const response = await User.create(data);
-	const createdToken = signToken(response, "15m");
-	const decodedToken = verifyToken(createdToken);
-	await token.create({
-		user_id: response._id,
-		token: createdToken,
-		type: "verify_account",
-		expiresAt: decodedToken.exp,
-	});
-	await sendEmail(response.email, "activate", createdToken);
+	const activeEmailtoken = await generateAndStoreToken(
+		response,
+		"verify_account",
+		"15m",
+	);
+	await sendEmail(response.email, "activate", activeEmailtoken);
 	return successResponse("Đăng ký thành công", response);
 };
 
@@ -50,7 +47,7 @@ export const login = async (data) => {
 export const activateAccount = async (tokenParam) => {
 	const decodedToken = verifyToken(tokenParam);
 	const tokenDoc = await token.findOne({ token: tokenParam });
-	const foundUser = await user.findOne(decodedToken._id);
+	const foundUser = await User.findById(decodedToken.id);
 	if (foundUser.isActive === "activated") {
 		throwError(400, "Tài khoản đã được kích hoạt!");
 	}
@@ -74,19 +71,18 @@ export const forgotPassword = async (data) => {
 	if (!foundEmail) {
 		throwError(404, "Email không tồn tại!");
 	}
-	const createdToken = signToken(foundEmail, "15m");
-	const decodedToken = verifyToken(createdToken);
-	await token.create({
-		user_id: foundEmail._id,
-		token: createdToken,
-		type: "verify_account",
-		expiresAt: decodedToken.exp,
-	});
-	await sendEmail(foundEmail.email, "reset", token);
+	const forgotEmailtoken = await generateAndStoreToken(
+		foundEmail,
+		"reset_password",
+		"15m",
+	);
+	console.log(forgotEmailtoken);
+
+	await sendEmail(foundEmail.email, "reset", forgotEmailtoken);
 	return successResponse("Đường dẫn lấy lại mật khẩu đã được gửi vào email!");
 };
 
-export const resetPassword = async (password, tokenParam) => {
+export const resetPassword = async (data, tokenParam) => {
 	const decodedToken = verifyToken(tokenParam);
 	const tokenDoc = await token.findOne({ token: tokenParam });
 	if (!tokenDoc) {
@@ -101,14 +97,25 @@ export const resetPassword = async (password, tokenParam) => {
 	}
 	await token.updateOne({ token: tokenParam }, { used: "used" });
 	// Mã hóa password bằng thư viện bcryptjs
-	const hash = hashPassword(password);
-	await user.updateOne({ _id: decodedToken._id }, { password: hash });
+	const hash = hashPassword(data.password);
+	await User.updateOne({ _id: decodedToken.id }, { password: hash });
 	return successResponse("Đổi mật khẩu thành công");
 };
 
-export const changePassword = async (password, user) => {
+export const changePassword = async (data, user) => {
 	const foundUser = await User.findById(user);
-	const hash = hashPassword(password);
-	await User.updateOne({ _id: foundUser._id }, { password: hash });
-	return successResponse("Đổi mật khẩu thành công!");
+	if (foundUser && (await comparePassword(data.password, foundUser.password))) {
+		console.log(data.password);
+
+		if (data.newpassword === data.password) {
+			throwError(
+				400,
+				"Bạn không thể đổi giống mật khẩu hiện tại của tài khoản!",
+			);
+		}
+		// Mã hóa password bằng thư viện bcryptj
+		const hash = hashPassword(data.newpassword);
+		await User.updateOne({ _id: foundUser._id }, { password: hash });
+		return successResponse("Đổi mật khẩu thành công!");
+	}
 };
