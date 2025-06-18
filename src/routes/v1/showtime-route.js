@@ -12,6 +12,36 @@ import { AdminLogger } from "../../middleware/adminLog.js";
 
 /**
  * @swagger
+ * /api/v1/showtime/by-movie/{movie_id}:
+ *   get:
+ *     summary: Lấy thông tin suất chiếu theo movie_id
+ *     tags: [Showtime]
+ *     description: |
+ *       ### Mô tả:
+ *       Chức năng Lấy chi tiết thông tin suất chiếu dựa trên movie_id.
+ *
+ *       Chức năng này một trong những quy trình sử dụng của người dùng
+ *        - Kiểm tra xuất chiếu dựa trên id bộ phim người dùng muốn xem
+ *        - Giúp xác định được id showtime để đặt vé
+ *
+ *       ### Hướng dẫn:
+ *       Truyền ID loại vé vào tham số (Tham số `id` là id của suất chiếu cần lấy thông tin
+ *         - Ví dụ: `/api/v1/showtime/by-movie/665c412394c78f60a61b4ff1`, "665c412394c78f60a61b4ff1" là id của bộ phim (movie_id)
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lấy danh sách thông tin suất chiếu thành công!
+ *       404:
+ *         description: Không tìm thấy thông tin suất chiếu!
+ */
+
+/**
+ * @swagger
  * /api/v1/showtime/add:
  *   post:
  *     summary: Thêm mới suất chiếu
@@ -201,6 +231,7 @@ import { AdminLogger } from "../../middleware/adminLog.js";
 const routes = new Router();
 routes.get("/", controller.getAllShowtimeController);
 routes.get("/:id", controller.getShowtimeByIdController);
+routes.get("/by-movie/:movie_id", controller.getShowtimeByMovieController);
 routes.post("/add/", isAdmin, AdminLogger, controller.createShowtimeController);
 routes.delete(
 	"/delete/:id",
