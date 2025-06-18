@@ -8,6 +8,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import { geoipVNOnly } from "./middleware/geoipMiddleware.js";
 import { requestLogger } from "./middleware/loggerMiddleware.js";
 import compression from "compression";
+import { swaggerServe, swaggerSetup, swaggerSpec } from "./config/swagger.js";
 
 const app = express();
 app.use(
@@ -23,6 +24,7 @@ app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 app.use(compression({ threshold: 1024 }));
 app.use(geoipVNOnly);
 app.use(requestLogger);
+app.use("/api-docs", swaggerServe, swaggerSetup(swaggerSpec));
 Routers(app);
 app.use(errorHandler);
 

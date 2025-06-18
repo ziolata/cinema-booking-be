@@ -35,7 +35,7 @@ export const login = async (data) => {
 		(await comparePassword(data.password, foundAccount.password))
 	) {
 		const token = signToken(foundAccount, "3d");
-		const bearerToken = `Bearer ${token}`;
+		const bearerToken = `${token}`;
 
 		return successResponse("Đăng nhập thành công", {
 			access_token: bearerToken,
@@ -79,7 +79,7 @@ export const forgotPassword = async (data) => {
 	console.log(forgotEmailtoken);
 
 	await sendEmail(foundEmail.email, "reset", forgotEmailtoken);
-	return successResponse("Đường dẫn lấy lại mật khẩu đã được gửi vào email!");
+	return successResponse("Gửi email đặt lại mật khẩu thành công");
 };
 
 export const resetPassword = async (data, tokenParam) => {

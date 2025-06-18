@@ -6,9 +6,9 @@ import {
 export const sendEmail = async (email, type, token) => {
 	const link = `${process.env.LINK}/api/v1/auth/${type}/${token}`;
 	if (type === "reset") {
-		await sendResetEmail(email, link);
+		await sendResetEmail(email, link, token);
 	}
 	if (type === "activate") {
-		await sendActivateEmail(email, link);
+		await sendActivateEmail(email, link, token);
 	}
 };

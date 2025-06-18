@@ -1,10 +1,11 @@
 import { transporter } from "../config/nodemailer.js";
-export const sendResetEmail = async (to, link) => {
+export const sendResetEmail = async (to, link, token) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
 		to,
 		subject: "Đặt lại mật khẩu",
 		html: `<p>Bạn đã yêu cầu đặt lại mật khẩu.</p>
+			<p>Token: ${token}</p>
             <p>Nhấp vào liên kết dưới đây để đặt lại mật khẩu:</p>
             <a href="${link}">Click vào đây để đặt lại mật khẩu</a>
             <p>Liên kết này sẽ hết hạn sau 15 phút.</p>`,
@@ -13,15 +14,17 @@ export const sendResetEmail = async (to, link) => {
 	await transporter.sendMail(mailOptions);
 };
 
-export const sendActivateEmail = async (to, link) => {
+export const sendActivateEmail = async (to, link, token) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
 		to,
 		subject: "Kích hoạt tài khoản Cinema AZ",
 		html: `<p>Bạn vừa tạo tài khoản tại.....</p>
+			<p>Token: ${token}</p>
             <p>Nhấp vào liên kết dưới đây để kích hoạt tài khoản:</p>
             <a href="${link}">Click vào đây</a>
-            <p>Liên kết này sẽ hết hạn sau 15 phút.</p>`,
+            <p>Liên kết này sẽ hết hạn sau 15 phút.</p>
+			`,
 	};
 
 	await transporter.sendMail(mailOptions);
