@@ -40,9 +40,6 @@ export const forgotPasswordController = async (req, res, next) => {
 export const resetPasswordController = async (req, res, next) => {
 	try {
 		const { token } = req.params;
-		if (req.body.password !== req.body.repassword) {
-			throw { status: 400, message: "Mật khẩu không trùng khớp!" };
-		}
 		const response = await service.resetPassword(req.body, token);
 		return res.status(200).json(response);
 	} catch (error) {

@@ -29,7 +29,7 @@ import { AdminLogger } from "../../middleware/adminLog.js";
  *         - Ví dụ: `/api/v1/showtime/by-movie/665c412394c78f60a61b4ff1`, "665c412394c78f60a61b4ff1" là id của bộ phim (movie_id)
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: movie_id
  *         required: true
  *         schema:
  *           type: string

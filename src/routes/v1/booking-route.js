@@ -50,8 +50,6 @@ import { AdminLogger } from "../../middleware/adminLog.js";
  *           schema:
  *             type: object
  *             properties:
- *               user_id:
- *                 type: string
  *               showtime:
  *                 type: string
  *               ticket_type:
@@ -63,8 +61,7 @@ import { AdminLogger } from "../../middleware/adminLog.js";
  *                   properties:
  *                     id:
  *                       type: string
- *               email:
- *                 type: string
+ *
  *             example:
  *
  *               showtime: "665c412394c78f60a61b4ff3"
@@ -80,7 +77,7 @@ import { AdminLogger } from "../../middleware/adminLog.js";
  *         description: Một số ghế đã được đặt trước
  *       404:
  *         description: Suất chiếu, loại vé hoặc ghế không tồn tại
- *       401:
+ *
  */
 
 /**

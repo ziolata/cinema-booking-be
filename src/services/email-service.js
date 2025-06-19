@@ -69,7 +69,7 @@ export const sendTicket = async (to, item) => {
                 <p style="font-size: 16px; color: #555;">Cảm ơn bạn đã đặt vé tại <strong>CinemaAZ</strong>.</p>
                 
                 <!-- Danh sách sản phẩm hiển thị theo hàng ngang -->
-                <p style="font-size: 16px; color: #555;">Sản phẩm đã đặt:</p>
+                <p style="font-size: 16px; color: #555;">Vé đã đặt:</p>
                 <table style="width: 100%; text-align: center; margin: 20px auto;">
                 
                     <tr>

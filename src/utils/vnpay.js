@@ -1,4 +1,5 @@
 import booking from "../models/booking.js";
+import ticket from "../models/ticket.js";
 import payment from "../models/payment.js";
 import crypto from "crypto";
 const generateUniqueTicketCode = async () => {

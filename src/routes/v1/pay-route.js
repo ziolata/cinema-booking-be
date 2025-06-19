@@ -28,12 +28,18 @@ import { isAdmin, isAuthenticated } from "../../middleware/authMiddleware.js";
  *
  *        Truyền đầy đủ thông tin theo định dạng trong **example value**.
  *
+ *        Sau khi tạo thanh toán thì coppy dữ liệu paymentUrl dán vào trình duyệt để thực hiện thanh toán
+ *
+ *        Chọn thẻ nội địa và nhập giống thẻ test ở dưới
+ *
  *        Thẻ test:
  *         - Ngân hàng: NCB
  *         - Số thẻ: 9704198526191432198
  *         - Tên chủ thẻ:NGUYEN VAN A
  *         - Ngày phát hành:07/15
  *         - Mật khẩu OTP:123456
+ *
+ *
  *
  *
  *     requestBody:
