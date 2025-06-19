@@ -56,6 +56,22 @@ export const getShowtimeById = async (id) => {
 	);
 };
 
+export const getShowtimeByMovie = async (movie_id) => {
+	checkObjectId(movie_id);
+	const foundShowtime = await showtime.find({ movie_id }).populate({
+		path: "room",
+		populate: { path: "seats" },
+	});
+
+	if (!foundShowtime) {
+		throwError(404, "Không tìm thấy thông tin suất chiếu!");
+	}
+	return successResponse(
+		"Lấy danh sách thông tin suất chiếu thành công!",
+		foundShowtime,
+	);
+};
+
 export const getAllShowtime = async (page = 1, limit = 10) => {
 	const docsToItems = {
 		docs: "items",

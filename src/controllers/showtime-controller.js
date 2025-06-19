@@ -30,6 +30,16 @@ export const getShowtimeByIdController = async (req, res, next) => {
 	}
 };
 
+export const getShowtimeByMovieController = async (req, res, next) => {
+	try {
+		const { movie_id } = req.params;
+		const response = await service.getShowtimeByMovie(movie_id);
+		return res.status(200).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const updateShowtimeController = async (req, res, next) => {
 	try {
 		const { id } = req.params;
