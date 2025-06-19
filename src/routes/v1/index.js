@@ -11,6 +11,7 @@ import tickeType from "./ticket_type-route.js";
 import ticket from "./ticket-route.js";
 import booking from "./booking-route.js";
 import pay from "./pay-route.js";
+import search from "./search-route.js";
 
 export const Routers = (app) => {
 	app.use("/api/v1/role", role);
@@ -22,8 +23,9 @@ export const Routers = (app) => {
 	app.use("/api/v1/movie", movie);
 	app.use("/api/v1/showtime", showtime);
 	app.use("/api/v1/genre", genre);
-	app.use("/api/v1/ticket_type", tickeType);
+	app.use("/api/v1/ticket-type", tickeType);
 	app.use("/api/v1/ticket", ticket);
 	app.use("/api/v1/booking", booking);
 	app.use("/api/v1/pay", pay);
+	app.use("/api/v1/search", search);
 };

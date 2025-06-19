@@ -1,10 +1,11 @@
 import { transporter } from "../config/nodemailer.js";
-export const sendResetEmail = async (to, link) => {
+export const sendResetEmail = async (to, link, token) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
 		to,
 		subject: "Đặt lại mật khẩu",
 		html: `<p>Bạn đã yêu cầu đặt lại mật khẩu.</p>
+			<p>Token: ${token}</p>
             <p>Nhấp vào liên kết dưới đây để đặt lại mật khẩu:</p>
             <a href="${link}">Click vào đây để đặt lại mật khẩu</a>
             <p>Liên kết này sẽ hết hạn sau 15 phút.</p>`,
@@ -13,13 +14,29 @@ export const sendResetEmail = async (to, link) => {
 	await transporter.sendMail(mailOptions);
 };
 
-export const sendActivateEmail = async (to, link) => {
+export const sendActivateEmail = async (to, link, token) => {
 	const mailOptions = {
 		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
 		to,
 		subject: "Kích hoạt tài khoản Cinema AZ",
 		html: `<p>Bạn vừa tạo tài khoản tại.....</p>
+			<p>Token: ${token}</p>
             <p>Nhấp vào liên kết dưới đây để kích hoạt tài khoản:</p>
+            <a href="${link}">Click vào đây</a>
+            <p>Liên kết này sẽ hết hạn sau 15 phút.</p>
+			`,
+	};
+
+	await transporter.sendMail(mailOptions);
+};
+
+export const sendChangeEmail = async (to, link) => {
+	const mailOptions = {
+		from: `"Cinema AZ Web App" <${process.env.EMAIL_USER}>`,
+		to,
+		subject: "Đổi email tại Cinema AZ",
+		html: `<p>Bạn vừa yêu cầu đổi thông tin email tại  Cinema AZ.</p>
+            <p>Nhấp vào liên kết dưới đây để xác nhận đổi email:</p>
             <a href="${link}">Click vào đây</a>
             <p>Liên kết này sẽ hết hạn sau 15 phút.</p>`,
 	};
@@ -52,7 +69,7 @@ export const sendTicket = async (to, item) => {
                 <p style="font-size: 16px; color: #555;">Cảm ơn bạn đã đặt vé tại <strong>CinemaAZ</strong>.</p>
                 
                 <!-- Danh sách sản phẩm hiển thị theo hàng ngang -->
-                <p style="font-size: 16px; color: #555;">Sản phẩm đã đặt:</p>
+                <p style="font-size: 16px; color: #555;">Vé đã đặt:</p>
                 <table style="width: 100%; text-align: center; margin: 20px auto;">
                 
                     <tr>
