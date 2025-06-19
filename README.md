@@ -1,16 +1,15 @@
 # Tên dự án: Cinema Booking API
 
-#### Mô Tả:
-    Cinema Booking API 🎬  
-    Hệ thống API đặt vé xem phim với các chức năng: quản lý người dùng, lịch chiếu, rạp chiếu, tìm kiếm, đặt vé và thanh toán.
+#### 📄 Mô Tả:
+    Cinema Booking API 🎬
+    Xây dựng hệ thống API cho ứng dụng đặt vé xem phim, hỗ trợ các chức năng: Quản lý người dùng, lịch chiếu, rạp chiếu, tìm kiếm phim, đặt vé và thanh toán trực tuyến.
 
 #### ⚙️ Tính Năng Chính
 - Quản lý người dùng: đăng ký, đăng nhập, phân quyền.
-- Quản lý lịch chiếu, rạp chiếu, phòng chiếu, ghế ngồi.
-- Đặt vé, thanh toán trực tuyến.
+- Quản lý lịch chiếu, rạp chiếu, bộ phim, phòng chiếu, ghế ngồi.
+- Tìm kiếm bộ phim, Đặt vé, thanh toán trực tuyến.
 - Xác thực người dùng bằng JWT.
-- Tài liệu hóa API với Swagger UI.
-- Triển khai với PM2 và Nginx.
+
 
 
 #### 🚀 Công Nghệ Sử Dụng:
@@ -66,6 +65,7 @@
 
 
 #### 📚 Tài Liệu API
+    Tài liệu hóa API với Swagger UI.
     Swagger UI: http://cinema.ziodev.site/api-docs
 
 Bạn có thể kiểm thử các API trực tiếp trên Swagger UI:
@@ -78,11 +78,15 @@ Bạn có thể kiểm thử các API trực tiếp trên Swagger UI:
 -    Các chức năng quản lý khác
 
 #### 🛠 Triển khai
-    Dự án được triển khai bằng:
+    Triển khai với PM2 và Nginx trên Windows Server.
 
     PM2: Quản lý tiến trình Node.js
 
     Nginx: Cấu hình proxy và phục vụ API
 
-#### 📫 Liên Hệ
-   Email: ziolata3@gmail.com
+#### 📫 Tác Giả & Liên hệ
+**Tác giả:** ziolata  
+
+**Email:** [ziolata3@gmail.com](mailto:ziolata3@gmail.com)
+
+**GitHub:** [https://github.com/ziolata/](https://github.com/ziolata)
