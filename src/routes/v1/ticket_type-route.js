@@ -12,6 +12,34 @@ import { AdminLogger } from "../../middleware/adminLog.js";
 
 /**
  * @swagger
+ * /api/v1/ticket-type/by-showtime/{showtime_id}:
+ *   get:
+ *     summary: Lấy thông tin loại vé theo id của suất chiếu
+ *     tags: [TicketType]
+ *     description: |
+ *       ### Mô tả:
+ *       Lấy chi tiết thông tin loại vé dựa trên showtime_id.
+ *
+ *       Để xác định loại vé trong suất chiếu phim cần đặt
+ *
+ *       ### Hướng dẫn:
+ *       Truyền ID loại vé vào param.
+ *       - Ví dụ: `/api/v1/ticket-type/by-showtime/665c412394c78f60a61b4ff3` trong đó 665c412394c78f60a61b4ff3 là showtime_id cần truyền vào
+ *     parameters:
+ *       - in: path
+ *         name: showtime_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lấy loại vé thành công
+ *       404:
+ *         description: Loại vé không tồn tại
+ */
+
+/**
+ * @swagger
  * /api/v1/ticket-type/add:
  *   post:
  *     summary: Thêm mới loại vé
@@ -225,6 +253,10 @@ import { AdminLogger } from "../../middleware/adminLog.js";
 const routes = new Router();
 routes.get("/", controller.getAllTicketTypeController);
 routes.get("/:id", controller.getTicketTypeByIdController);
+routes.get(
+	"/by-showtime/:showtime_id",
+	controller.getTicketTypeByShowtimeController,
+);
 routes.post(
 	"/add/",
 	isAdmin,
