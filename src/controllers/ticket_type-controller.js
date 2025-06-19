@@ -21,6 +21,16 @@ export const getTicketTypeByIdController = async (req, res, next) => {
 	}
 };
 
+export const getTicketTypeByShowtimeController = async (req, res, next) => {
+	try {
+		const { showtime_id } = req.params;
+		const response = await service.getTicketTypeByShowtime(showtime_id);
+		return res.status(200).json(response);
+	} catch (error) {
+		next(error);
+	}
+};
+
 export const createTicketTypeController = async (req, res, next) => {
 	try {
 		const response = await service.createTicketType(req.body);

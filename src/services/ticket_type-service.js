@@ -32,7 +32,7 @@ export const createTicketType = async (data) => {
 	if (!foundShowtime) {
 		throwError(404, "Suất chiếu không tồn tại!");
 	}
-	const response = await ticket.create(data);
+	const response = await ticket_type.create(data);
 	return successResponse("Thêm thành công!", response);
 };
 
@@ -51,6 +51,7 @@ export const getAllTicketType = async (page = 1, limit = 10) => {
 		foundTicketType,
 	);
 };
+
 export const getTicketTypeById = async (id) => {
 	const foundTicketType = await getTicketTypeOrThrowById(id);
 	return successResponse(
@@ -58,6 +59,18 @@ export const getTicketTypeById = async (id) => {
 		foundTicketType,
 	);
 };
+
+export const getTicketTypeByShowtime = async (showtime) => {
+	const foundTicketType = await ticket_type.find({ showtime });
+	if (!foundTicketType) {
+		throwError(404, "Không tìm thấy loại vé theo suất chiếu!");
+	}
+	return successResponse(
+		"Lấy danh sách loại vé theo suất chiếu thành công!",
+		foundTicketType,
+	);
+};
+
 export const updateTicketType = async (id, data) => {
 	await getTicketTypeOrThrowById(id);
 	await throwIfTicketTypeExists({
@@ -67,12 +80,12 @@ export const updateTicketType = async (id, data) => {
 		day_type: data.day_type,
 		type: data.ticket_type,
 	});
-	await ticket.updateOne({ _id: id }, data);
+	await ticket_type.updateOne({ _id: id }, data);
 	return successResponse("Cập nhật thành công!");
 };
 
 export const deleteTicketType = async (id) => {
 	await getTicketTypeOrThrowById(id);
-	await ticket.deleteOne({ _id: id });
+	await ticket_type.deleteOne({ _id: id });
 	return successResponse("Xóa thành công!");
 };
